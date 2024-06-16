@@ -1,64 +1,67 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
 public class Main {
+	static ArrayList<Integer>[] grape;
+	static boolean visited[];
+	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		
-		int size = sc.nextInt();
-		int degree = sc.nextInt();
-		int start_point = sc.nextInt();
+		int N = sc.nextInt(); // 정점의 개수
+		int M = sc.nextInt(); // 간선의 개수
+		int V = sc.nextInt(); // 탐색을 시작할 정점의 번호
 		
-		int graph[][] = new int[size][size];
-		int num[] = new int[size];
-		int num1[] = new int[size];
+		grape = new ArrayList[N + 1];
+		visited = new boolean[N + 1];
 		
-		for (int i = 0; i < size; i++) {
-			num[i] = 1;
-		}
-		for (int i = 0; i < size; i++) {
-			num1[i] = 1;
+		for (int i = 1; i < N + 1; i++) {
+			grape[i] = new ArrayList<Integer>();
 		}
 		
-		for (int i = 0; i < degree; i++) {
-			makeDegree(graph, sc.nextInt(), sc.nextInt());
+		for (int i = 0; i < M; i++) {
+			int S = sc.nextInt();
+			int E = sc.nextInt();
+			grape[S].add(E);
+			grape[E].add(S);
 		}
-		
-		DES(graph, num, start_point);
+		for (int i = 1; i <= N; i++) {
+			Collections.sort(grape[i]);
+		}
+		DFS(V);
 		System.out.println();
-		
-		Queue<Integer> queue = new LinkedList<>();
-		
-		BFS(graph,num1,start_point,queue);
-		sc.close();
+		visited = new boolean[N + 1];
+		BFS(V);
 	}
-	
-	static void makeDegree(int arr[][], int x, int y) {
-		arr[x-1][y-1] = 1;
-		arr[y-1][x-1] = 1;
-	}
-	
-	static void DES(int arr[][], int N[], int start_point) {
-		System.out.print(start_point + " ");
-		N[start_point - 1] = 0;
-		for (int i = 1; i <= N.length; i ++) {
-			if (arr[start_point-1][i-1] == 1 && N[i-1] == 1) DES(arr, N, i);
-		}
-	}
-	
-	static void BFS(int arr[][], int N[], int start_point, Queue queue) {
-		if (N[start_point - 1] != 0) {
-			System.out.print(start_point + " ");
-			N[start_point - 1] = 0;
-		}
-		for (int i = 1; i <= N.length; i++) {
-			if (arr[start_point - 1][i-1] == 1 && N[i-1] == 1) {
-				System.out.print(i + " ");
-				N[i - 1] = 0;
-				queue.add(i);
+
+
+	static void DFS(int v) {
+		System.out.print(v + " ");
+		visited[v] = true;
+		for (int i : grape[v]) {
+			if (!visited[i]) {
+				DFS(i);
 			}
 		}
-		if (queue.size() != 0) BFS(arr,N,(int)queue.poll(),queue);
+	}
+	
+	private static void BFS(int v) {
+		Queue<Integer> queue = new LinkedList<Integer>();
+		queue.add(v);
+		visited[v] = true;
+		
+		while (!queue.isEmpty()) {
+			int now_Node = queue.poll();
+			System.out.print(now_Node + " ");
+			for (int i : grape[now_Node]) {
+				if (!visited[i]) {
+					visited[i] = true;
+					queue.add(i);
+				}
+			}
+		}
 	}
 }
