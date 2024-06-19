@@ -7,32 +7,33 @@ class Solution {
         
         int x = 0;
         int y = 0;
+        int ox = 0;
+        int oy = 0;
         
         Set<String> set = new HashSet<>();
         for (int i = 0; i < dirs.length(); i++) {
         	char c = dirs.charAt(i);
-        	int nx = x;
-            int ny = y;
-        	if (c == 'U' && y < 5) {
-        		y++;
-        	} else if (c == 'D' && -5 < y) {
-        		y--;
-        	} else if (c == 'R' && x < 5) {
-        		x++;
-        	} else if (c == 'L' && -5 < x) {
-        		x--;
-        	}
         	
-        	if (nx != x || ny != y) {
-        		String path1 = nx +","+ny+"-"+x+","+y;
-        		String path2 = x +","+y+"-"+nx+","+ny;
-        		if (!set.contains(path1) && !set.contains(path2)) { 
-        			set.add(path1);
-        			set.add(path2);
-        			answer++;
-        		}
+        	if (c == 'U' && y < 10) {
+        		oy = y+1;
+        		y++;
+        		set.add(x+" "+y+"to"+x+" "+y);
+        	} else if (c == 'D' && 0 < y) {
+        		oy = y-1;
+        		y--;
+        		set.add(x+" "+y+"to"+x+" "+y);
+        	} else if (c == 'R' && x < 10) {
+        		ox = x+1;
+        		x++;
+        		set.add(x+" "+y+"to"+x+" "+y);
+        	} else if (c == 'L' && 0 < x) {
+        		ox = x-1;
+        		x--;
+        		set.add(x+" "+y+"to"+x+" "+y);
         	}
+        	answer = set.size();
         }
+        
         return answer;
     }
 }
