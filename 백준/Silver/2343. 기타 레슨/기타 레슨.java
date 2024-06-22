@@ -1,34 +1,39 @@
 import java.util.Scanner;
 
 public class Main {
+
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
+		
 		int N = sc.nextInt();
 		int M = sc.nextInt();
-		int[] A = new int[N];
+		int[] arr = new int[N];
 		int start = 0;
 		int end = 0;
-		for (int i = 0; i < N; i++) {
-			A[i] = sc.nextInt();
-			if (start < A[i]) start = A[i];
-			end = end + A[i];
+		
+		
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = sc.nextInt();
+			if (start < arr[i]) start = arr[i]; 
+			end += arr[i];
 		}
 		
 		while (start <= end) {
-			int middle = (start + end) / 2;
+			int mid = (start + end) / 2;
 			int sum = 0;
-			int count = 0;
-			for (int i = 0; i < N; i++) {
-				if (sum + A[i] > middle) {
-					count++;
-					sum = 0;
+			int cnt = 0;
+			for (int i = 0; i < arr.length; i++) {
+				sum += arr[i];
+				if (sum > mid) {
+					cnt++;
+					sum = arr[i];
 				}
-				sum = sum + A[i];
 			}
-			if (sum != 0) count++;
-			if (count > M) start = middle + 1;
-			else end = middle - 1;
+			if (sum != 0) cnt++;
+			if (cnt > M) start = mid + 1; 
+			else end = mid - 1;
 		}
 		System.out.println(start);
+		sc.close();
 	}
 }
