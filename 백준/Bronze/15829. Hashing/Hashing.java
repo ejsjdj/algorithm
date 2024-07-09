@@ -32,12 +32,20 @@ public class Main {
 		hm.put("z", 26);
 		
 		Scanner sc = new Scanner(System.in);
-		int N = Integer.parseInt(sc.nextLine());
+		long N = Integer.parseInt(sc.nextLine());
 		String str = sc.nextLine();
 		
-		int sum = 0;
+		long sum = 0;
 		for (int i = 0; i < N; i++) {
-			sum += hm.get(String.valueOf(str.charAt(i))) * Math.pow(31, i);
+			long num = hm.get(String.valueOf(str.charAt(i)));
+			int cnt = 0;
+			while (cnt != i) {
+				cnt++;
+				num *= 31;
+				num %= 1234567891;
+			}
+			sum += num;
+			sum %= 1234567891;
 		}
 		System.out.println(sum);
 	}
