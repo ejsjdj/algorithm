@@ -3,7 +3,8 @@ class Solution {
         String answer = "(None)";
         int maxTime = 0;
 
-        m = m.replace("C#", "H").replace("D#", "I").replace("F#", "J").replace("G#", "K").replace("A#", "L").replace("B#", "K");
+        // m의 "#" 처리
+        m = m.replace("C#", "H").replace("D#", "I").replace("F#", "J").replace("G#", "K").replace("A#", "L");
 
         for (String info : musicinfos) {
             String[] now = info.split(",");
@@ -12,7 +13,7 @@ class Solution {
             int time = (end >= start) ? (end - start) : (end + 24 * 60 - start);
 
             String title = now[2];
-            String score = now[3].replace("C#", "H").replace("D#", "I").replace("F#", "J").replace("G#", "K").replace("A#", "L").replace("B#","K");
+            String score = now[3].replace("C#", "H").replace("D#", "I").replace("F#", "J").replace("G#", "K").replace("A#", "L");
             String nowMusic = score.repeat(time / score.length()) + score.substring(0, time % score.length());
 
             if (nowMusic.contains(m)) {
