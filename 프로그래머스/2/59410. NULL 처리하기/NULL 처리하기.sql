@@ -1,10 +1,9 @@
 SELECT 
-    ANIMAL_TYPE,
-    CASE 
-        WHEN NAME IS NULL THEN 'No name' 
-        ELSE NAME 
-    END AS NAME, 
+    ANIMAL_TYPE, 
+    CASE    
+        WHEN NAME IS NULL THEN 'No name'
+        else NAME
+    END AS NAME,
     SEX_UPON_INTAKE
-FROM 
-    ANIMAL_INS
-ORDER BY ANIMAL_ID;
+        FROM ANIMAL_INS
+        ORDER BY ANIMAL_ID;
