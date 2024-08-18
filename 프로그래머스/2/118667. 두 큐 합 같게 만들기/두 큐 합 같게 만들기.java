@@ -59,7 +59,7 @@ class Solution {
         			q2.add(now);
         			answer++;
         		}
-        		if (answer > queue1.length * 3) return -1;
+        		if (answer > queue1.length * 2) return -1;
         	}
         }
         
