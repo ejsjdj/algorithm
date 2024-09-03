@@ -1,0 +1,10 @@
+SELECT
+    USER_ID, PRODUCT_ID
+FROM 
+    ONLINE_SALE 
+GROUP BY
+    USER_ID, PRODUCT_ID
+HAVING
+    COUNT(*) >= 2
+order by 
+    USER_ID asc, PRODUCT_ID desc
