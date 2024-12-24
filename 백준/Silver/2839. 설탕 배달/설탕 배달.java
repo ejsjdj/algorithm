@@ -2,30 +2,25 @@ import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
+    
 		Scanner sc = new Scanner(System.in);
+        
+		int N = sc.nextInt();
 		
-		int kg = sc.nextInt();
-		sc.close();
 		
-		int cnt = 0;
-		
-		while (kg >= 3) {
-			if (kg % 5 == 0) {
-				cnt += kg / 5;
-				kg = kg % 5;
-			}
-			else if (kg % 3 == 0 && kg < 15) {
-				cnt += kg / 3;
-				kg = kg % 3;
-			} else {
-				kg -= 5;
-				cnt ++;
-			}
-		}
-		if (kg == 0) {
-			System.out.println(cnt);
-		} else {
+		if (N == 4 || N == 7) {
 			System.out.println(-1);
 		}
+		else if (N % 5 == 0) {
+			System.out.println(N / 5);
+		}
+		else if (N % 5 == 1 || N % 5 == 3) {
+			System.out.println((N / 5) + 1);
+		}
+		else if (N % 5 == 2 || N % 5 == 4) {
+			System.out.println((N / 5) + 2);
+		}
+		
+		sc.close();
 	}
 }
