@@ -15,7 +15,7 @@ public class Main {
 		int[] arr = new int[N];
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		for (int i = N-1; i >= 0; i--) {
+		for (int i = 0; i < N; i++) {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
 		
@@ -29,7 +29,7 @@ public class Main {
 		List<Integer> lis = new ArrayList<>();
 		
 		for (int n : arr) {
-			int idx = Collections.binarySearch(lis, n);
+			int idx = Collections.binarySearch(lis, n, Collections.reverseOrder());
 			if (idx < 0) idx = -(idx + 1);
 			if (idx == lis.size()) lis.add(n);
 			else lis.set(idx, n);
