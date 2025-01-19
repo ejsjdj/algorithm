@@ -21,24 +21,23 @@ public class Main {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		for (int i = N; i > 0; i--) {
+		for (int i = 1; i <= N; i++) {
 			lis = new ArrayList<>();
 			lds = new ArrayList<>();
 			lis.add(arr[i]);
 			lds.add(arr[i]);
 			for (int j = i + 1; j <= N; j++) {
-				int idx = Collections.binarySearch(lis, arr[j]);
-				if (idx < 0) idx = -(idx + 1);
-				if (idx == lis.size()) lis.add(arr[j]);
-				else if (idx != 0) lis.set(idx, arr[j]);
+				int idx1 = Collections.binarySearch(lis, arr[j]);
+				if (idx1 < 0) idx1 = -(idx1 + 1);
+				if (idx1 == lis.size()) lis.add(arr[j]);
+				else if (idx1 != 0) lis.set(idx1, arr[j]);
+				
+				int idx2 = Collections.binarySearch(lds, arr[j], Collections.reverseOrder());
+				if (idx2 < 0) idx2 = -(idx2 + 1);
+				if (idx2 == lds.size()) lds.add(arr[j]);
+				else if (idx2 != 0) lds.set(idx2, arr[j]);
 			}
 			answerSet[i][0] = lis.size();
-			for (int j = i + 1; j <= N; j++) {
-				int idx = Collections.binarySearch(lds, arr[j], Collections.reverseOrder());
-				if (idx < 0) idx = -(idx + 1);
-				if (idx == lds.size()) lds.add(arr[j]);
-				else if (idx != 0) lds.set(idx, arr[j]);
-			}
 			answerSet[i][1] = lds.size();
 		}
 		int resp = 0;
