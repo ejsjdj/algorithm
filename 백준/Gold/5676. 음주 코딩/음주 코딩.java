@@ -42,7 +42,8 @@ public class Main {
             else if (input > 0) tree[idx] = 1;
             else tree[idx] = -1;
         }
-        for (int i = start - 1; i > 0; i--) { // 내부 노드 초기화
+        start--;
+        for (int i = start; i > 0; i--) { // 내부 노드 초기화
             tree[i] = tree[2 * i] * tree[2 * i + 1];
         }
     }
@@ -56,8 +57,8 @@ public class Main {
     static void multi() {
         int s = Integer.parseInt(st.nextToken());
         int e = Integer.parseInt(st.nextToken());
-        s += start - 1; // 실제 인덱스 변환
-        e += start - 1;
+        s += start; 
+        e += start;
         int result = 1;
         while (s <= e) {
             if (s % 2 == 1) result *= tree[s++];
@@ -76,7 +77,7 @@ public class Main {
         if (v == 0) v = 0;
         else if (v > 0) v = 1;
         else v = -1;
-        s += start - 1; // 실제 인덱스 변환
+        s += start; // 실제 인덱스 변환
         tree[s] = v;
         while (s > 1) {
             s /= 2;
