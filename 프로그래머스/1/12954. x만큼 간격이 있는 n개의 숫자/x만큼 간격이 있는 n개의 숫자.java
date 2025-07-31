@@ -5,7 +5,6 @@ class Solution {
         int i = 0;
         while (i < n) {
         	answer[i] = (long)x + (long)x * i;
-        	
         	i++;
         }
         
