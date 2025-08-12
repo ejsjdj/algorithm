@@ -8,7 +8,6 @@ class Solution {
         for (int i = phone_number.length() - 4; i < phone_number.length(); i++) {
         	answer += phone_number.charAt(i);
         }
-        
         return answer;
     }
 }
