@@ -27,7 +27,8 @@ public class Main {
         int K = Integer.parseInt(st.nextToken());
         
         int[] A = new int[N];
-        int[] cnt = new int[N];
+        boolean[] touched = new boolean[N];
+        int[] diff = new int[N + 1];
         
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
@@ -37,11 +38,15 @@ public class Main {
         for (int i = 0; i < K; i++) {
             st = new StringTokenizer(br.readLine());
             int left = Integer.parseInt(st.nextToken()) - 1;
-            int right = Integer.parseInt(st.nextToken()) - 1;
+            int right = Integer.parseInt(st.nextToken());
             
-            for (int j = left; j <= right; j++) {
-                cnt[j]++;
-            }
+            diff[left]++;
+            diff[right]--;
+        }
+        int curr = 0;
+        for (int i = 0; i < N; i++) {
+        	curr += diff[i];
+        	if (curr > 0) touched[i] = true;
         }
         
         long pow2K = power(2, K);
@@ -49,7 +54,7 @@ public class Main {
         
         long result = 0;
         for (int i = 0; i < N; i++) {
-            if (cnt[i] == 0) {
+            if (!touched[i]) {
                 result = (result + (A[i] * pow2K) % MOD) % MOD;
             } else {
                 result = (result + pow2K_minus_1) % MOD;
