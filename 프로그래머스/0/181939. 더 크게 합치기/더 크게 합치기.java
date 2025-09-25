@@ -3,4 +3,5 @@ class Solution {
         return Math.max(Integer.parseInt(String.valueOf(a)+String.valueOf(b)),
                                Integer.parseInt(String.valueOf(b)+String.valueOf(a)));
     }
+    
 }
