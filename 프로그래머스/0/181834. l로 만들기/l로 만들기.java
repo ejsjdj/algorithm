@@ -14,6 +14,7 @@ class Solution {
         myString = myString.replace("j", "l");
         myString = myString.replace("k", "l");        
         answer = myString;
+        
         return answer;
     }
 }
