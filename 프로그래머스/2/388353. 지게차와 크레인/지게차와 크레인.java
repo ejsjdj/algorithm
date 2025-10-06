@@ -18,8 +18,11 @@ class Solution {
 	int[][] check;
 	
     public int solution(String[] storage, String[] requests) {
-    	
         int answer = storage.length * storage[0].length();
+        
+        // 그냥일때 0
+        // 크레인으로 뺏을때 -1
+        // 외부와 연결됬을때 1
         check = new int[storage.length][storage[0].length()];
         
         makeMap(storage);
@@ -29,13 +32,6 @@ class Solution {
         	if (request.length() == 2) answer -= crain(request.charAt(0));
         	else answer -= forkLift(request.charAt(0));
         }
-        
-//        for (int i = 0; i < map.length; i++) {
-//        	for (int j = 0; j < map[i].length; j++) {
-//        		System.out.print(map[i][j] + " ");
-//        	}
-//        	System.out.println();
-//        }
         
         return answer;
     }
@@ -66,7 +62,6 @@ class Solution {
     			int col = node.col;
     			map[row][col] = '0';
     			check[row][col] = 1;
-    			cnt++;
     		}
     	}
     	
@@ -85,7 +80,7 @@ class Solution {
     		Node cur = queue.poll();
     		int row = cur.row;
     		int col = cur.col;
-    		if (row == 0 || col == 0 || row == map.length - 1 || col == map[0].length - 1 || check[row][col] == 1) {
+    		if (row == 0 || col == 0 || row == map.length - 1 || col == map[0].length - 1) {
     			check[node.row][node.col] = 1;
     			return true;
     		}
@@ -96,7 +91,7 @@ class Solution {
     			int m_col = col + dc[i];
     			
     			if (0 <= m_row && m_row < map.length && 0 <= m_col && m_col < map[0].length 
-    					&& map[m_row][m_col] == '0' && !visited[m_row][m_col]) {
+    					&& check[m_row][m_col] != 0 ) {
     				queue.add(new Node(m_row, m_col));
     			}
     			
@@ -112,7 +107,6 @@ class Solution {
     	for (int i = 0; i < storage.length; i++) {
     		for (int j = 0; j < storage[i].length(); j++) {
     			map[i][j] = storage[i].charAt(j);
-    			
     		}
     	}
     }
@@ -124,12 +118,13 @@ class Solution {
     	for (int i = 0; i < map.length; i++) {
     		for (int j = 0; j < map[i].length; j++) {
     			if (map[i][j] == request) {
-    				isPossible(new Node(i,j));
     				cnt++;
     				map[i][j] = '0';
+    				check[i][j] = -1;
     			}
     		}
     	}
+    	
     	
     	return cnt;
     }
