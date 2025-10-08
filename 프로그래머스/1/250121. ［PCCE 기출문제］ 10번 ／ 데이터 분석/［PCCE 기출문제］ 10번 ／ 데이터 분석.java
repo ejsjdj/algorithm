@@ -5,7 +5,6 @@ import java.util.Collections;
 class Solution {
     public int[][] solution(int[][] data, String ext, int val_ext, String sort_by) {
         
-        
 //        ["코드 번호(code)", 
 //        "제조일(date)", 
 //        "최대 수량(maximum)", 
