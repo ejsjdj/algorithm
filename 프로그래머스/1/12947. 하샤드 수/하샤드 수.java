@@ -7,6 +7,7 @@ class Solution {
         for (int i = 0; i < s.length(); i++) {
         	dNum += s.charAt(i) - '0';
         }
+        
         if (x % dNum == 0) answer = true;
         else answer = false;
         
