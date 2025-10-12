@@ -8,7 +8,6 @@ class Node {
 		this.type = type;
 		this.children = new ArrayList<>();
 	}
-	
 }
 
 class Solution {
@@ -16,6 +15,7 @@ class Solution {
 	Node[] tree;
 	int answer = 0;
 	boolean[] visited;
+	
 	public int solution(int[] info, int[][] edges) {
 		
 		tree = new Node[info.length];
@@ -39,8 +39,10 @@ class Solution {
 
 	public void DFS(int index, int sheep, int wolf) {
 		visited[index] = true;
+		
 		if (tree[index].type == 0) sheep += 1;
 		else wolf += 1;
+		
 		if (wolf >= sheep) {
 			visited[index] = false;
 			answer = Math.max(answer, sheep);
@@ -51,12 +53,11 @@ class Solution {
 			if (visited[i]) {
 				for (int j : tree[i].children) {
 					if (!visited[j]) {
-						DFS(j, sheep, wolf);
+						DFS(j, sheep, wolf);	
 					}
 				}
 			}
 		}
-		
 		visited[index] = false;
 		answer = Math.max(answer, sheep);
 		return;
