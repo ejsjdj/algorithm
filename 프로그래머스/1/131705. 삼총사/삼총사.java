@@ -9,7 +9,6 @@ class Solution {
         		}
         	}
         }
-        
         return answer;
     }
 }
