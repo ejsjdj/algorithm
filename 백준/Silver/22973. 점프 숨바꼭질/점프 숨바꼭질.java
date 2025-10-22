@@ -7,19 +7,21 @@ public class Main {
 		
 		long num = sc.nextLong();
 		
-		if (num < 0) num = -num;
+		if (num == 0) {
+			System.out.println(0);
+			return;
+		}
+		else if (num % 2 == 0) {
+			System.out.println(-1);
+			return;
+		}
 		
-		num += 1;
+		num = Math.abs(num);
+		
 		int cnt = 0;
-		
-		while (num != 1) {
-			if (num % 2 != 0) {
-				System.out.println(-1);
-				return;
-			} else {
-				num /= 2;
-				cnt++;
-			}
+		while (num > 0) {
+			num >>= 1;
+			cnt++;			// 0 1 2 3
 		}
 		
 		System.out.println(cnt);
