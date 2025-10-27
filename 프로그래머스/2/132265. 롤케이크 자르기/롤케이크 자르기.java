@@ -5,7 +5,7 @@ class Solution {
         int answer = 0;
         
         // 각 토핑의 개수를 세기 위한 배열
-        int[] count = new int[10001]; // 토핑의 종류가 10000 이하라고 가정
+        int[] count = new int[10001];
         
         // 모든 토핑의 개수를 센다
         for (int t : topping) {
@@ -19,6 +19,7 @@ class Solution {
         for (int t : topping) {
             rightSet.add(t);
         }
+        
         
         // 토핑을 하나씩 왼쪽으로 이동하면서 비교
         for (int t : topping) {
