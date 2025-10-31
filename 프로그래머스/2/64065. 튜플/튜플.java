@@ -9,7 +9,6 @@ class A {
 		this.N = N;
 	}
 }
-
 class Solution {
     public int[] solution(String s) {
         
