@@ -8,7 +8,11 @@ class Solution {
         
         for (int c : d) {
         	sum += c;
-        	if (sum > budget) break;
+            
+        	if (sum > budget) {
+                break;
+            }
+            
         	answer++;
         }
         
