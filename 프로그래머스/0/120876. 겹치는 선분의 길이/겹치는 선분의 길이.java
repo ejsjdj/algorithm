@@ -2,23 +2,21 @@ class Solution {
     public int solution(int[][] lines) {
         int answer = 0;
         
-        int[] linea = new int[300]; // 충분한 크기의 배열
+        int left = Math.max(lines[0][0], lines[1][0]);
+        int right = Math.min(lines[0][1], lines[1][1]);
+        if (right - left > 0) answer += right - left;
         
-        for (int i = 0; i < lines.length; i++) {
-            int a = lines[i][0] + 150; // 시작점
-            int b = lines[i][1] + 150; // 끝점
-            // 선분 범위에 따라 증가
-            for (int j = a; j < b; j++) {
-                linea[j]++;
-            }
-        }
+        left = Math.max(lines[1][0], lines[2][0]);
+        right = Math.min(lines[1][1], lines[2][1]);
+        if (right - left > 0) answer += right - left;
         
-        // 선분이 겹치는 부분을 세기
-        for (int i = 0; i < linea.length - 1; i++) {
-            if (linea[i] >= 2) {
-                answer++;
-            }
-        }
+        left = Math.max(lines[2][0], lines[0][0]);
+        right = Math.min(lines[2][1], lines[0][1]);
+        if (right - left > 0) answer += right - left;
+        
+        left = Math.max(Math.max(lines[0][0], lines[1][0]), lines[2][0]);
+        right = Math.min(Math.min(lines[0][1], lines[1][1]), lines[2][1]);
+        if (right - left > 0) answer -= (right - left) * 2;
         
         return answer;
     }
