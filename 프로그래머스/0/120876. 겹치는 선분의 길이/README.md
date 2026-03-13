@@ -1,6 +1,6 @@
 # [level 0] 겹치는 선분의 길이 - 120876 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120876?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120876) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2026년 03월 13일 22:42:33
+2026년 03월 13일 22:43:24
 
 ### 문제 설명
 
