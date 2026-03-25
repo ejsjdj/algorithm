@@ -5,125 +5,128 @@ import java.util.*;
 
 public class Main {
 
-    static int N, M;
+    static int n, m;
     static List<Integer>[] adj;
 
-    // 타잔알고리즘
+    // Tarjan
     static boolean[] visited;
     static boolean[] onStack;
-    static int[] d;
-    static int timer;
+    static int[] disc;
+    static int time;
     static Stack<Integer> stack;
 
     // SCC 결과
-    static List<List<Integer>> SCC;
+    static List<List<Integer>> sccList;
     static int[] sccId;
     static int sccCnt;
 
-    // DAG
+    // SCC DAG
     static int[] outDegree;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         while (true) {
+            String line = br.readLine();
+            if (line == null) return;
+            StringTokenizer st = new StringTokenizer(line);
+            n = Integer.parseInt(st.nextToken());
+            if (n == 0) break;
+            m = Integer.parseInt(st.nextToken());
 
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            N = Integer.parseInt(st.nextToken());
-            if (N == 0) break;
-            M = Integer.parseInt(st.nextToken());
-
-            adj = new ArrayList[N + 1];
-            for (int i = 1; i <= N; i++) {
+            adj = new ArrayList[n + 1];
+            for (int i = 1; i <= n; i++) {
                 adj[i] = new ArrayList<>();
             }
 
-            SCC = new ArrayList<>();
-            visited = new boolean[N + 1];
-            onStack = new boolean[N + 1];
-            d = new int[N + 1];
-            timer = 0;
-            stack = new Stack<>();
-
+            // 간선 입력
             st = new StringTokenizer(br.readLine());
-            for (int i = 0; i < M; i++) {
+            for (int i = 0; i < m; i++) {
                 int from = Integer.parseInt(st.nextToken());
                 int to = Integer.parseInt(st.nextToken());
                 adj[from].add(to);
             }
 
-            for (int i = 1; i <= N; i++) {
-                if (!visited[i]) {
-                    dfs(i);
-                }
+            // Tarjan 초기화
+            visited = new boolean[n + 1];
+            onStack = new boolean[n + 1];
+            disc = new int[n + 1];
+            time = 0;
+            stack = new Stack<>();
 
+            sccList = new ArrayList<>();
+
+            // SCC 탐색
+            for (int v = 1; v <= n; v++) {
+                if (!visited[v]) {
+                    dfs(v);
+                }
             }
 
             sccCnt = 0;
-            sccId = new int[N + 1];
-            outDegree = new int[SCC.size() + 1];
-
-            for (List<Integer> scc : SCC) {
+            sccId = new int[n + 1];
+            for (List<Integer> comp : sccList) {
                 sccCnt++;
-                for (int i : scc) {
-                    sccId[i] = sccCnt;
+                for (int v : comp) {
+                    sccId[v] = sccCnt;
                 }
             }
 
-            for (int i = 1; i <= N; i++) {
-                for (int j : adj[i]) {
-                    if (sccId[i] != sccId[j]) {
-                        outDegree[sccId[i]]++;
+            outDegree = new int[sccCnt + 1];
+            for (int v = 1; v <= n; v++) {
+                for (int nxt : adj[v]) {
+                    if (sccId[v] != sccId[nxt]) {
+                        outDegree[sccId[v]]++;
                     }
                 }
             }
 
             List<Integer> result = new ArrayList<>();
-            for (int i = 1; i <= SCC.size(); i++) {
-                if (outDegree[i] == 0) {
-                    for (int j : SCC.get(i - 1)) {
-                        result.add(j);
+            for (int comp = 1; comp <= sccCnt; comp++) {
+                if (outDegree[comp] == 0) {
+                    for (int v : sccList.get(comp - 1)) {
+                        result.add(v);
                     }
                 }
             }
 
             Collections.sort(result);
             StringBuilder sb = new StringBuilder();
-            for (int i : result) {
-                sb.append(i).append(" ");
+            for (int v : result) {
+                sb.append(v).append(' ');
             }
-            sb.append("\n");
+            sb.append('\n');
             System.out.print(sb);
-
         }
     }
 
+    static int dfs(int v) {
+        visited[v] = true;
+        disc[v] = ++time;
+        stack.push(v);
+        onStack[v] = true;
 
-    static int dfs(int curr) {
-        visited[curr] = true;
-        d[curr] = ++timer;
-        stack.push(curr);
-        onStack[curr] = true;
+        int low = disc[v];
 
-        int parent = d[curr];
-        for (int conn : adj[curr]) {
-            if (!visited[conn]) {
-                parent = Math.min(parent, dfs(conn));
-            } else if (onStack[conn]) {
-                parent = Math.min(parent, d[conn]);
+        for (int nxt : adj[v]) {
+            if (!visited[nxt]) {
+                low = Math.min(low, dfs(nxt));
+            } else if (onStack[nxt]) {
+                low = Math.min(low, disc[nxt]);
             }
         }
 
-        if (parent == d[curr]) {
-            List<Integer> scc = new ArrayList<>();
+        if (low == disc[v]) {
+            List<Integer> comp = new ArrayList<>();
             while (true) {
-                int peek = stack.pop();
-                scc.add(peek);
-                onStack[peek] = false;
-                if (peek == curr) break;
+                int top = stack.pop();
+                comp.add(top);
+                onStack[top] = false;
+                if (top == v) break;
             }
-            SCC.add(scc);
+            sccList.add(comp);
         }
-        return parent;
-    }
 
+        return low;
+    }
 }
