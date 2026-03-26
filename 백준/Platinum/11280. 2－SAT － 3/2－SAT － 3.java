@@ -1,100 +1,120 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.StringTokenizer;
-
-class Graph {
-    List<Integer> list;
-
-    public Graph() {
-        list = new ArrayList<>();
-    }
-}
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
-    static Graph[] graphs;
-    static int[] d;
+    static List<List<Integer>> graph;
+    static int[] sccId;             // 각 노드가 속하는 SCC 번호
+    static int[] visitOrder;        // DFS 방문 순서
+    static boolean[] visited;       
+    static boolean[] finished;      
     static Stack<Integer> stack;
-    static boolean[] visited;
-    static boolean[] finished;
-    static int idx;
+    static int orderCount;          
+    static int sccCount;            
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
 
-        graphs = new Graph[2 * N + 1];
-        d = new int[2 * N + 1];
-        stack = new Stack<>();
-        visited = new boolean[2 * N + 1];
-        finished = new boolean[2 * N + 1];
+        int N = Integer.parseInt(st.nextToken()); // 변수의 개수
+        int M = Integer.parseInt(st.nextToken()); // 절의 개수
 
-        for (int i = 1; i < graphs.length; i++) {
-            graphs[i] = new Graph();
+        int nodeCount = 2 * N; // 각 변수마다 true, false 두 노드 존재
+        graph = new ArrayList<>();
+        for (int i = 0; i <= nodeCount; i++) {
+            graph.add(new ArrayList<>());
         }
+
+        sccId = new int[nodeCount + 1];
+        visitOrder = new int[nodeCount + 1];
+        visited = new boolean[nodeCount + 1];
+        finished = new boolean[nodeCount + 1];
+        stack = new Stack<>();
 
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            // 만약에 a 가 음수일 경우 a보다 1작은 수로 설정
-            // 양수일경우 그냥 그대로 둠
-            if (a < 0) a = (-2) * a - 1;
-            else a = 2 * a;
-            if (b < 0) b = (-2) * b - 1;
-            else b = 2 * b;
-            // a가 거짓일 경우 b 는 반드시 참이여야 함
 
-            graphs[oppo(a)].list.add(b);
-            graphs[oppo(b)].list.add(a);
+            int aIdx = literalToNode(a);
+            int bIdx = literalToNode(b);
+
+            // (¬a → b), (¬b → a)
+            graph.get(negate(aIdx)).add(bIdx);
+            graph.get(negate(bIdx)).add(aIdx);
         }
 
-        for (int i = 1; i < visited.length; i++) {
-            if (!visited[i]) dfs(i);
+        for (int i = 1; i <= nodeCount; i++) {
+            if (!visited[i]) {
+                findSCC(i);
+            }
         }
 
-        boolean flag = false;
+        boolean isUnsatisfiable = false;
         for (int i = 1; i <= N; i++) {
-            if (d[2 * i] == d[2 * i - 1]) {
-                flag = true;
+            if (sccId[2 * i] == sccId[2 * i - 1]) {
+                isUnsatisfiable = true;
                 break;
             }
         }
-        if (flag) System.out.println(0);
-        else System.out.println(1);
+
+        if (isUnsatisfiable) {
+            System.out.println(0);
+        } else {
+            System.out.println(1);
+        }
     }
 
-    static int dfs(int input) {
-        visited[input] = true;
-        int parent = ++idx;
-        stack.push(input);
-        d[input] = idx;
+    static int findSCC(int node) {
+        visited[node] = true;
+        orderCount++;
+        visitOrder[node] = orderCount;
+        int parent = visitOrder[node];
+        stack.push(node);
 
-        for (int i : graphs[input].list) {
-            if (!visited[i]) parent = Math.min(parent, dfs(i));
-            else if (!finished[i]) parent = Math.min(parent, d[i]);
-        }
-
-        if (parent == d[input]) {
-            while (true) {
-                int current = stack.pop();
-                finished[current] = true;
-                d[current] = parent;
-                if (current == input) break;
+        for (int next : graph.get(node)) {
+            if (!visited[next]) {
+                parent = Math.min(parent, findSCC(next));
+            } else if (!finished[next]) {
+                parent = Math.min(parent, visitOrder[next]);
             }
         }
+
+        if (parent == visitOrder[node]) {
+            sccCount++;
+            while (true) {
+                int cur = stack.pop();
+                finished[cur] = true;
+                sccId[cur] = sccCount;
+                if (cur == node) {
+                    break;
+                }
+            }
+        }
+
         return parent;
     }
 
-    static int oppo(int n) {
-        if (n % 2 == 0) n = n - 1;
-        else n = n + 1;
-        return n;
+    // 리터럴(정수 입력)을 노드 인덱스로 변환
+    // 예: 1 → 2, -1 → 1
+    static int literalToNode(int x) {
+        int idx;
+        if (x > 0) {
+            idx = 2 * x;
+        } else {
+            idx = -2 * x - 1;
+        }
+        return idx;
+    }
+
+    // 해당 노드의 반대(¬변수) 인덱스를 반환
+    static int negate(int idx) {
+        int result;
+        if (idx % 2 == 0) {
+            result = idx - 1;
+        } else {
+            result = idx + 1;
+        }
+        return result;
     }
 }
