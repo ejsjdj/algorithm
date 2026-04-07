@@ -4,74 +4,77 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-	static long[] tree;
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());	 	// 수의 개수
-		int M = Integer.parseInt(st.nextToken());		// 수의 변경이 일어나는 횟수
-		int K = Integer.parseInt(st.nextToken());		// 구간의 합을 구하는 횟수
-		int treeHeight = 0;
-		int length = N;
-		while (length != 0) {
-			length /= 2;
-			treeHeight++;
-		}
-		int treeSize = (int) Math.pow(2, treeHeight + 1);
-		int leftNodeStartIndex = treeSize / 2 - 1;
-		tree = new long[treeSize + 1];
-		// 데이터를 리프 노드에 입력받기
-		for (int i = leftNodeStartIndex + 1; i <= leftNodeStartIndex + N; i++) {
-			tree[i] = Long.parseLong(br.readLine());
-		}
-		setTree(treeSize - 1);
-		for (int i = 0; i < M + K; i++) {
-			st = new StringTokenizer(br.readLine());
-			long a= Long.parseLong(st.nextToken());
-			int s = Integer.parseInt(st.nextToken());
-			long e = Long.parseLong(st.nextToken());
-			if (a == 1) {
-				changeVal(leftNodeStartIndex + s, e);
-			} else if (a == 2) {
-				s = s + leftNodeStartIndex;
-				e = e + leftNodeStartIndex;
-				System.out.println(getSum(s, (int) e));
-			} else {
-				return;
-			}
-		}
-		br.close();
-	}
-	
-	private static long getSum(int s, int e) {
-		long partSum = 0;
-		while (s <= e) {
-			if (s % 2 == 1) {
-				partSum = partSum + tree[s];
-				s++;
-			}
-			if (e % 2 == 0) {
-				partSum = partSum + tree[e];
-				e--;
-			}
-			s = s / 2;
-			e = e / 2;
-		}
-		return partSum;
-	}
-	
-	private static void changeVal(int index, long val) { // 값을 변경하는 함수
-		long diff = val - tree[index];
-		while (index > 0) {
-			tree[index] = tree[index] + diff;
-			index = index / 2;
-		}
-	}
-	
-	private static void setTree(int i) {
-		while (i != 1) {
-			tree[i / 2] += tree[i];
-			i--;
-		}
-	}
+
+    static int N, M, K;
+    static long[] tree;
+    static long[] arr;                 
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+
+    public static void main(String[] args) throws IOException {
+        st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+
+        arr = new long[N + 1];
+        tree = new long[4 * N];
+        
+        for (int i = 1; i <= N; i++) {
+            arr[i] = Long.parseLong(br.readLine());
+        }
+        
+        build(1, 1, N);
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < M + K; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            long c = Long.parseLong(st.nextToken());
+
+            if (a == 1) {
+                long diff = c - arr[b];
+                arr[b] = c;
+                update(1, 1, N, b, diff);
+            } else {
+                sb.append(query(1, 1, N, b, (int) c)).append('\n');
+            }
+        }
+
+        System.out.print(sb);
+    }
+
+    static void build(int node, int left, int right) {
+        if (left == right) {
+            tree[node] = arr[left];
+            return;
+        }
+        int mid = (left + right) / 2;
+        build(node * 2, left, mid);
+        build(node * 2 + 1, mid + 1, right);
+        tree[node] = tree[node * 2] + tree[node * 2 + 1];
+    }
+
+    static void update(int node, int nodeLeft, int nodeRight, int index, long diff) {
+        if (index < nodeLeft || index > nodeRight) return; 
+
+        tree[node] += diff;
+
+        if (nodeLeft == nodeRight) return;                  
+
+        int mid = (nodeLeft + nodeRight) / 2;
+        update(node * 2, nodeLeft, mid, index, diff);
+        update(node * 2 + 1, mid + 1, nodeRight, index, diff);
+    }
+    
+    static long query(int node, int nodeLeft, int nodeRight, int left, int right) {
+        if (right < nodeLeft || left > nodeRight) return 0; 
+        if (left <= nodeLeft && nodeRight <= right) return tree[node]; 
+
+        int mid = (nodeLeft + nodeRight) / 2;
+        return query(node * 2, nodeLeft, mid, left, right)
+                + query(node * 2 + 1, mid + 1, nodeRight, left, right);
+    }
 }
