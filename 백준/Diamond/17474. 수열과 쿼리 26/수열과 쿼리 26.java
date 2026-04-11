@@ -78,7 +78,6 @@ public class Main {
             treeMaxCnt[node] = treeMaxCnt[leftChild];
 
             treeMax2[node] = Math.max(treeMax2[leftChild], treeMax1[rightChild]);
-            treeMaxCnt[node] = treeMaxCnt[leftChild];
         }
 
         else {
@@ -86,7 +85,6 @@ public class Main {
             treeMaxCnt[node] = treeMaxCnt[rightChild];
 
             treeMax2[node] = Math.max(treeMax1[leftChild], treeMax2[rightChild]);
-            treeMaxCnt[node] = treeMaxCnt[rightChild];
         }
     }
 
