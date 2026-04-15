@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
 
-// Graph, Tree 클래스는 그대로 두셔도 됩니다.
 class Graph {
     List<Integer> won;
     List<Integer> lose;
@@ -20,7 +19,6 @@ class Tree {
 }
 
 public class Main {
-    // 기존 static 변수들은 그대로 유지
     static Graph[] graphs;
     static int idx;
     static int[] d;
@@ -30,7 +28,6 @@ public class Main {
     static List<List<Integer>> SCC;
     static int[] sccId;
     static int[] inDegree;
-    static int[] outDegree; // outDegree는 사실상 안쓰입니다.
     static Tree[] tree;
 
     public static void main(String[] args) throws Exception {
@@ -75,9 +72,7 @@ public class Main {
         for (int i = 0; i < sccCnt; i++) tree[i] = new Tree();
         inDegree = new int[sccCnt];
 
-        makeDegree(N, sccCnt); // 이 함수는 그대로
-
-        // --- 여기서부터 로직 수정 ---
+        makeDegree(N); // 이 함수는 그대로
 
         Set<Integer> S = new HashSet<>(); // 우승 가능 노드 집합
         Queue<Integer> q = new LinkedList<>(); // 위상 정렬용 큐
@@ -124,7 +119,7 @@ public class Main {
             if (survive) {
                 // 현재 그룹 S에 추가
                 S.addAll(SCC.get(nowSccIdx));
-                
+
                 // 새로운 챔피언(now)이 등장했으므로,
                 // 기존 챔피언들에게 져서 대기중이던(back) 애들도
                 // 이 새로운 챔피언을 이길 가능성이 생김 -> 전부 구제하여 S에 추가
@@ -178,7 +173,7 @@ public class Main {
         return parent;
     }
 
-    static void makeDegree(int N, int sccCnt) {
+    static void makeDegree(int N) {
         for (int v = 1; v <= N; v++) {
             int from = sccId[v];
             for (int w : graphs[v].won) {
