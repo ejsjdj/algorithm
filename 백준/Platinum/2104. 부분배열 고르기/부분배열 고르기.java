@@ -9,77 +9,94 @@ public class Main {
     static StringTokenizer st;
 
     static int N;
+    static long[] sumTree;   // 구간 합 세그트리
+    static int[] minIdxTree; // 구간 최솟값 인덱스 세그트리
+    static int[] a;          // 입력 배열 (1-based)
 
-    static long[] sumTree;
-    static int[] idxTree;
-    static int[] basic;
-    static int idx = 0;
     public static void main(String[] args) throws IOException {
-
         N = Integer.parseInt(br.readLine());
+
         sumTree = new long[N * 4];
-        idxTree = new int[N * 4];
-        basic = new int[N + 1];
+        minIdxTree = new int[N * 4];
+        a = new int[N + 1];
+
         st = new StringTokenizer(br.readLine());
         for (int i = 1; i <= N; i++) {
-            basic[i] = Integer.parseInt(st.nextToken());
+            a[i] = Integer.parseInt(st.nextToken());
         }
 
         buildSum(1, 1, N);
-        buildIdx(1, 1, N);
-        System.out.println(query(1, N));
+        buildMinIdx(1, 1, N);
 
+        System.out.println(solve(1, N));
     }
 
-    static long buildSum(int node, int s, int e) {
-        if (s == e) return sumTree[node] = basic[s];
-        int m = (s + e) / 2;
-        return sumTree[node] = buildSum(node * 2, s, m) + buildSum(node * 2 + 1, m + 1, e);
+    // 합 세그트리 build
+    static long buildSum(int node, int start, int end) {
+        if (start == end) {
+            return sumTree[node] = a[start];
+        }
+        int mid = (start + end) / 2;
+        long left = buildSum(node * 2, start, mid);
+        long right = buildSum(node * 2 + 1, mid + 1, end);
+        return sumTree[node] = left + right;
     }
 
-    static int buildIdx(int node, int s, int e) {
-        if (s == e) return idxTree[node] = s;
-        int m = (s + e) / 2;
-        int leftVal = buildIdx(node * 2, s, m);
-        int rightVal = buildIdx(node * 2 + 1, m + 1, e);
-        return idxTree[node] = (basic[leftVal] <= basic[rightVal]) ? leftVal : rightVal;
+    // 최소 인덱스 세그트리 build
+    static int buildMinIdx(int node, int start, int end) {
+        if (start == end) {
+            return minIdxTree[node] = start;
+        }
+        int mid = (start + end) / 2;
+        int leftIdx = buildMinIdx(node * 2, start, mid);
+        int rightIdx = buildMinIdx(node * 2 + 1, mid + 1, end);
+        return minIdxTree[node] =
+                (a[leftIdx] <= a[rightIdx]) ? leftIdx : rightIdx;
     }
 
-    static long getSum(int left, int right, int node, int nodeLeft, int nodeRight) {
-        if (left > nodeRight || right < nodeLeft) return 0;
-
-        if (left <= nodeLeft && nodeRight <= right) return sumTree[node];
-
-        int mid = (nodeLeft + nodeRight) / 2;
-        return getSum(left, right, node * 2, nodeLeft, mid) +
-               getSum(left, right, node * 2 + 1, mid + 1, nodeRight);
+    // [l, r] 구간 합
+    static long getSum(int l, int r, int node, int start, int end) {
+        if (r < start || end < l) {
+            return 0;
+        }
+        if (l <= start && end <= r) {
+            return sumTree[node];
+        }
+        int mid = (start + end) / 2;
+        return getSum(l, r, node * 2, start, mid)
+             + getSum(l, r, node * 2 + 1, mid + 1, end);
     }
 
-    static int getMinIdx(int left, int right, int node, int nodeLeft, int nodeRight) {
-        if (left > nodeRight || right < nodeLeft) return 0;
-        if (left <= nodeLeft && nodeRight <= right) return idxTree[node];
+    // [l, r] 구간에서의 최솟값 인덱스
+    static int getMinIdx(int l, int r, int node, int start, int end) {
+        if (r < start || end < l) {
+            return 0; // sentinel
+        }
+        if (l <= start && end <= r) {
+            return minIdxTree[node];
+        }
+        int mid = (start + end) / 2;
+        int leftIdx = getMinIdx(l, r, node * 2, start, mid);
+        int rightIdx = getMinIdx(l, r, node * 2 + 1, mid + 1, end);
 
-        int mid = (nodeLeft + nodeRight) / 2;
-
-        int leftVal = getMinIdx(left, right, node * 2, nodeLeft, mid);
-        int rightVal = getMinIdx(left, right, node * 2 + 1, mid + 1, nodeRight);
-
-        if (leftVal == 0) return rightVal;
-        if (rightVal == 0) return leftVal;
-        return (basic[leftVal] > basic[rightVal]) ? rightVal : leftVal;
+        if (leftIdx == 0) return rightIdx;
+        if (rightIdx == 0) return leftIdx;
+        return (a[leftIdx] <= a[rightIdx]) ? leftIdx : rightIdx;
     }
 
-    static long query(int left, int right) {
-        if (left > right) return 0;
+    // [l, r] 구간에서 최대 score를 구하는 분할정복
+    static long solve(int l, int r) {
+        if (l > r) {
+            return 0;
+        }
 
-        int mid = getMinIdx(left, right, 1, 1, N);
-        long sum = getSum(left, right, 1, 1, N);
-        long midVal = sum * basic[mid];
+        int mid = getMinIdx(l, r, 1, 1, N);   // 최소값 인덱스
+        long sum = getSum(l, r, 1, 1, N);     // 구간 합
+        long midScore = sum * a[mid];
 
-        long leftVal = query(left, mid - 1);
-        long rightVal = query(mid + 1, right);
+        long leftScore = solve(l, mid - 1);
+        long rightScore = solve(mid + 1, r);
 
-        return Math.max(midVal, Math.max(leftVal, rightVal));
+        return Math.max(midScore, Math.max(leftScore, rightScore));
     }
-
 }
