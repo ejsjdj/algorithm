@@ -1,10 +1,10 @@
 # [level 2] 동명 동물 수 찾기 - 59041 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59041?language=oracle) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59041?language=mysql) 
 
 ### 성능 요약
 
-메모리: 0.0 MB, 시간: 0.00 ms
+메모리: undefined, 시간: 
 
 ### 구분
 
@@ -12,11 +12,11 @@
 
 ### 채점결과
 
-Empty
+합계: 100.0 / 100.0
 
 ### 제출 일자
 
-2024년 08월 01일 12:38:21
+2026년 05월 03일 22:28:17
 
 ### 문제 설명
 
