@@ -1,10 +1,10 @@
 # [level 2] 자동차 종류 별 특정 옵션이 포함된 자동차 수 구하기 - 151137 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/151137) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/151137?language=mysql) 
 
 ### 성능 요약
 
-메모리: 0.0 MB, 시간: 0.00 ms
+메모리: undefined, 시간: 
 
 ### 구분
 
@@ -12,11 +12,11 @@
 
 ### 채점결과
 
-Empty
+합계: 100.0 / 100.0
 
 ### 제출 일자
 
-2024년 08월 01일 17:37:22
+2026년 05월 08일 21:04:50
 
 ### 문제 설명
 
