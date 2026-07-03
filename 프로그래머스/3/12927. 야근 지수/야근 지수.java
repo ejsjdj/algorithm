@@ -28,10 +28,6 @@ class Solution {
         	time[maxIdx] -= 1;
         }
         for (int i = 0; i < time.length; i++) {
-        	System.out.print(time[i] + " ");
-        }
-        System.out.println();
-        for (int i = 0; i < time.length; i++) {
         	answer += time[i] * time[i];
         }
         
