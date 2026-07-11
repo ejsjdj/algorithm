@@ -1,86 +1,48 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-class Info {
-	int time;
-	String carNum;
-	String state = "IN";
-	int total = 0;
-	public Info(int time, String carNum) {
-		this.time = time;
-		this.carNum = carNum;
-	}
-	
-	public void totalSet(int leave) {
-		this.total += leave - time;
-	}
-	
-	public int calc (int basicTime, int basicPay, int unitTime, int payByUnit) {
-		if (state.equals("IN")) total += 23*60 + 59 - time;
-		
-		if (basicTime > total) return basicPay;
-		
-		else {
-			int pay = basicPay + (total - basicTime) / unitTime * payByUnit;
-			if ((total - basicTime)%unitTime > 0) pay += payByUnit;
-			return pay;
-		}
-	}
-}
+import java.util.*;
 
 class Solution {
     public int[] solution(int[] fees, String[] records) {
+        Map<String, Integer> in = new HashMap<>();
+        Map<String, Integer> out = new TreeMap<>();
         
-    	int basicTime = fees[0];
-    	int basicPay = fees[1];
-    	int unitTime = fees[2];
-    	int payByUnit = fees[3];
-    	
-    	List<Info> list = new ArrayList<>();
-    	
-    	for (int i = 0; i < records.length; i++) {
-    		
-    		String[] now = records[i].split(" ");
-    		
-    		int time = Integer.parseInt(now[0].split(":")[0]) * 60 + Integer.parseInt(now[0].split(":")[1]);
-    		String carNum = now[1];
-    		String state = now[2];
-    		
-    		if (state.equals("IN")) {
-    			boolean isHad = false;
-    			for (Info info : list) {
-    				if (info.carNum.equals(carNum)) {
-    					info.time = time;
-    					info.state = "IN";
-    					isHad = true;
-    					break;
-    				}
-    			}
-    			if (!isHad) list.add(new Info(time, carNum));
-    		}
-    		
-    		else {
-    			for (Info info : list) {
-    				if (info.carNum.equals(carNum)) {
-    					info.totalSet(time);
-    					info.state = "OUT";
-    					break;
-    				}
-    			}
-    		}
-    	}
-    	
-    	Collections.sort(list, (o1, o2) -> {
-    		return o1.carNum.compareTo(o2.carNum);
-    	});
-    	
-    	int[] answer = new int[list.size()];
-    	
-    	for (int i = 0; i < answer.length; i++) {
-    		answer[i] = list.get(i).calc(basicTime, basicPay, unitTime, payByUnit);
-    	}
-    	
-        return answer;
+        for(int i = 0; i < records.length; i++) {
+            String[] sArr = records[i].split(" ");
+            int hour = Integer.parseInt(sArr[0].split(":")[0]);
+            int min = Integer.parseInt(sArr[0].split(":")[1]);
+            int time = hour * 60 + min;
+            String carNum = sArr[1];
+            String type = sArr[2];
+            
+            if(type.equals("IN")) in.put(carNum, time);
+            else if(type.equals("OUT")) {
+                int diff = time - in.get(carNum);
+                out.put(carNum, out.getOrDefault(carNum, 0) + diff);
+                in.remove(carNum);
+            }
+        }
+     
+        for(Map.Entry<String, Integer> entry : in.entrySet()) {
+            int lastTime = 23 * 60 + 59;
+            String carNum = entry.getKey();
+            int diff = lastTime - entry.getValue();
+            out.put(carNum, out.getOrDefault(carNum, 0) + diff);
+        }
+
+        int[] result = new int[out.size()]; 
+        int idx = 0;
+        for(Map.Entry<String, Integer> entry : out.entrySet()) {
+            int time = entry.getValue();
+            int amount = fees[1];
+            time -= fees[0];
+            
+            if(time > 0) {
+                int plus = time % fees[2] == 0? time / fees[2] : time / fees[2] + 1;
+                amount += (plus * fees[3]);
+            }
+            
+            result[idx++] = amount;
+        }
+        
+        return result;
     }
 }
