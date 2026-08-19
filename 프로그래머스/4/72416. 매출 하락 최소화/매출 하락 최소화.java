@@ -6,7 +6,6 @@ class Person {
 	int sale;
 	
 	public Person(int idx, int sale) {
-		super();
 		this.idx = idx;
 		this.sale = sale;
 	}
