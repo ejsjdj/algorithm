@@ -1,85 +1,54 @@
-import java.util.ArrayList;
-import java.util.List;
-
-class Person {
-	int idx;
-	int sale;
-	
-	public Person(int idx, int sale) {
-		this.idx = idx;
-		this.sale = sale;
-	}
-
-	List<Integer> list = new ArrayList<>();
-}
+import java.util.*;
 
 class Solution {
-	
-	int[][] DP; // 0은 자기를 안포함
-				// 1은 자기를 포함
-	
-	Person[] persons;
+    List<Integer>[] tree;
+    int[][] dp;
+    int[] _sales;
+    
     public int solution(int[] sales, int[][] links) {
-        
-        DP = new int[sales.length + 1][2];
-        
-        for (int i = 0; i < DP.length; i++) {
-        		DP[i][0] = 0;
-        		DP[i][1] = 0;
+        int n = sales.length;
+        _sales = new int[n+1];
+        for(int i = 1; i <= n; i++) {
+            _sales[i] = sales[i-1];
         }
         
-        persons = new Person[sales.length + 1];
-        for (int i = 0; i < sales.length; i++) {
-        		int sale = sales[i];
-        		persons[i + 1] = new Person(i + 1, sale);
+        tree = new ArrayList[n+1];
+        for(int i = 0; i <= n; i++) {
+            tree[i] = new ArrayList<>();
         }
         
-        for (int i = 0; i < links.length; i++) {
-        		int a = links[i][0];
-        		int b = links[i][1];
-        		persons[a].list.add(b);
+        for(int i = 0; i < links.length; i++) {
+            tree[links[i][0]].add(links[i][1]);
         }
         
-        DFS(persons[1]);
+        dp = new int[n+1][2];   
         
-        return Math.min(DP[1][0], DP[1][1]);
+        dfs(1);
+        
+        return Math.min(dp[1][0], dp[1][1]);
     }
     
-    void DFS(Person person) {
-    		
-    		for (int i : person.list) {
-    			Person child = persons[i];
-    			DFS(child);
-    		}
-    		
-    		int idx = person.idx;
-    		int sale = person.sale;
-    		
-    		if (person.list.size() == 0) {
-    			DP[idx][0] = 0;
-    			DP[idx][1] = sale;
-    			return;
-    		}
-    		
-    		DP[idx][0] = 0;
-    		DP[idx][1] = sale;
-    		
-    		int diff = Integer.MAX_VALUE;	// 가장 작은 DP[i][1] 을 저장한다?
-    		boolean flag = false;
-    		for (int i : person.list) {
-    			DP[idx][1] += Math.min(DP[i][0], DP[i][1]);
-    			
-    			if (DP[i][0] > DP[i][1]) {
-    				DP[idx][0] += DP[i][1];
-    				flag = true;
-    			}
-    			else {
-    				DP[idx][0] += DP[i][0];
-    				diff = Math.min(diff, DP[i][1] - DP[i][0]);
-    			}
-    		}
-    		if (!flag) {
-    			DP[idx][0] += diff;
-    		}
+    public void dfs(int cur) {
+        dp[cur][1] = _sales[cur];
+        
+        if(tree[cur].size() == 0) return;
+        
+        int extraCost = Integer.MAX_VALUE; 
+        boolean hasAttendingChild = false; 
+        
+        for(int child : tree[cur]) {
+            dfs(child);
+            
+            dp[cur][1] += Math.min(dp[child][0], dp[child][1]);
+            
+            dp[cur][0] += Math.min(dp[child][0], dp[child][1]);
+            
+            
+            extraCost = Math.min(extraCost, dp[child][1] - dp[child][0]);
+        }
+        
+        if(extraCost > 0) {
+            dp[cur][0] += extraCost;
+        }
     }
 }
