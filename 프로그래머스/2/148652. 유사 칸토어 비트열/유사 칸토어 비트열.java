@@ -1,7 +1,6 @@
 class Solution {
     public int solution(int n, long l, long r) {
-        long result = count(n, r) - count(n, l - 1);
-        return (int) result;
+        return (int) (count(n, r) - count(n, l - 1));
     }
     
     private long count(int n, long x) {
@@ -30,8 +29,3 @@ class Solution {
         }
     }
 }
-
-// 0 : 1
-// 1 : 11011
-// 2 : 11011 11011 00000 11011 11011
-// 3 : 
